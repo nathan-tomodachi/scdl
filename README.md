@@ -79,6 +79,8 @@ scdl <soundcloud_url>
 scdl update
 ```
 
+The updater checks the latest tag on GitHub and skips the install if you're already up to date.
+
 Update to a specific version:
 
 ```sh

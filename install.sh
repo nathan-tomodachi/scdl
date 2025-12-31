@@ -3,7 +3,7 @@ set -e
 
 REPO_URL="${SCDL_REPO_URL:-https://github.com/nathan-tomodachi/scdl}"
 REPO_NAME="${SCDL_REPO_NAME:-scdl}"
-REF="${SCDL_REF:-main}"
+REF="${SCDL_REF:-master}"
 INSTALL_DIR="${SCDL_INSTALL_DIR:-$HOME/.local/bin}"
 
 require_cmd() {

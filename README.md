@@ -7,20 +7,20 @@ Soundcloud Downloader.
 The installer builds from source and places `scdl` in `~/.local/bin` by default.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/nathan-tomodachi/scdl/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/nathan-tomodachi/scdl/master/install.sh | sh
 ```
 
 ### Options
 
 - `SCDL_INSTALL_DIR` to override the install directory.
-- `SCDL_REF` to override the git ref (defaults to `main`).
+- `SCDL_REF` to override the git ref (defaults to `master`).
 - `SCDL_REPO_URL` to point at a different repo (useful for forks).
 - `SCDL_REPO_NAME` to override the archive folder name (defaults to `scdl`).
 
 Example:
 
 ```sh
-SCDL_INSTALL_DIR="$HOME/bin" curl -fsSL https://raw.githubusercontent.com/nathan-tomodachi/scdl/main/install.sh | sh
+SCDL_INSTALL_DIR="$HOME/bin" curl -fsSL https://raw.githubusercontent.com/nathan-tomodachi/scdl/master/install.sh | sh
 ```
 
 ### Requirements

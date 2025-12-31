@@ -14,6 +14,7 @@ curl -fsSL https://raw.githubusercontent.com/nathan-tomodachi/scdl/master/instal
 
 - `SCDL_INSTALL_DIR` to override the install directory.
 - `SCDL_REF` to override the git ref (defaults to `master`).
+- `SCDL_VERSION` to install a tagged release (e.g. `1.0.0` -> `v1.0.0`) and embed it in the binary.
 - `SCDL_REPO_URL` to point at a different repo (useful for forks).
 - `SCDL_REPO_NAME` to override the archive folder name (defaults to `scdl`).
 
@@ -21,6 +22,12 @@ Example:
 
 ```sh
 SCDL_INSTALL_DIR="$HOME/bin" curl -fsSL https://raw.githubusercontent.com/nathan-tomodachi/scdl/master/install.sh | sh
+```
+
+Install a tagged release:
+
+```sh
+SCDL_VERSION="1.0.0" curl -fsSL https://raw.githubusercontent.com/nathan-tomodachi/scdl/master/install.sh | sh
 ```
 
 ### Requirements

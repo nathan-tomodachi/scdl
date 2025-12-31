@@ -2,7 +2,7 @@ package main
 
 import "scdl/cmd"
 
-var Version = "1.0.0"
+var Version = "1.0.1"
 
 func main() {
 	cmd.SetVersion(Version)

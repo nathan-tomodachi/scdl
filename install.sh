@@ -4,6 +4,7 @@ set -e
 REPO_URL="${SCDL_REPO_URL:-https://github.com/nathan-tomodachi/scdl}"
 REPO_NAME="${SCDL_REPO_NAME:-scdl}"
 REF="${SCDL_REF:-master}"
+VERSION="${SCDL_VERSION:-}"
 INSTALL_DIR="${SCDL_INSTALL_DIR:-$HOME/.local/bin}"
 
 require_cmd() {
@@ -41,7 +42,14 @@ cleanup() {
 }
 trap cleanup EXIT
 
+if [ -n "$VERSION" ] && [ -z "${SCDL_REF:-}" ]; then
+  REF="v$VERSION"
+fi
+
 tarball_url="$REPO_URL/archive/refs/heads/$REF.tar.gz"
+if [ -n "$VERSION" ]; then
+  tarball_url="$REPO_URL/archive/refs/tags/$REF.tar.gz"
+fi
 printf "Downloading source from %s\n" "$tarball_url"
 curl -fsSL "$tarball_url" -o "$tmp_dir/scdl.tar.gz"
 
@@ -55,7 +63,11 @@ fi
 
 printf "Building scdl...\n"
 cd "$src_dir"
-go build -o "$tmp_dir/scdl" ./
+if [ -n "$VERSION" ]; then
+  go build -ldflags "-X main.Version=$VERSION" -o "$tmp_dir/scdl" ./
+else
+  go build -o "$tmp_dir/scdl" ./
+fi
 
 mkdir -p "$INSTALL_DIR"
 install -m 755 "$tmp_dir/scdl" "$INSTALL_DIR/scdl"

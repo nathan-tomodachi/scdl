@@ -73,6 +73,18 @@ scdl <soundcloud_url>
 - `-o`, `--output` output directory (default: current directory or config value)
 - `-f`, `--force` overwrite output file if it exists
 
+### Update
+
+```sh
+scdl update
+```
+
+Update to a specific version:
+
+```sh
+scdl update --version 1.0.0
+```
+
 ### Config file
 
 The default config file is created at `$HOME/.scdl.yaml`. It currently stores `output_dir` and is used as the default output directory when `-o/--output` is not provided.

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"os"
 
@@ -74,9 +73,7 @@ func initConfig() {
 
 	viper.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
+	_ = viper.ReadInConfig()
 }
 
 func resolveOutputDir(flagValue string) string {

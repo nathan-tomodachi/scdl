@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 
@@ -35,9 +36,11 @@ var updateCmd = &cobra.Command{
 func runUpdate(cmd *cobra.Command, desiredVersion string) error {
 	if desiredVersion == "" {
 		latest, err := fetchLatestTag(cmd.Context())
-		if err == nil && latest != "" && isUpToDate(version, latest) {
-			_, werr := fmt.Fprintf(cmd.OutOrStdout(), "Already up to date (%s)\n", latest)
-			return werr
+		if err == nil && latest != "" {
+			if msg, ok := upToDateMessage(version, latest); ok {
+				_, werr := fmt.Fprintln(cmd.OutOrStdout(), msg)
+				return werr
+			}
 		}
 	}
 
@@ -85,10 +88,76 @@ func fetchLatestTag(ctx context.Context) (string, error) {
 }
 
 func isUpToDate(current, latest string) bool {
-	cur := strings.TrimPrefix(strings.TrimSpace(current), "v")
-	lat := strings.TrimPrefix(strings.TrimSpace(latest), "v")
-	if cur == "" || lat == "" {
+	cur, ok := parseSemver(current)
+	if !ok {
 		return false
 	}
-	return cur == lat
+	lat, ok := parseSemver(latest)
+	if !ok {
+		return false
+	}
+	return compareSemver(cur, lat) >= 0
+}
+
+func upToDateMessage(current, latest string) (string, bool) {
+	if !isUpToDate(current, latest) {
+		return "", false
+	}
+	cur := strings.TrimPrefix(strings.TrimSpace(current), "v")
+	lat := strings.TrimPrefix(strings.TrimSpace(latest), "v")
+	if cur == lat {
+		return fmt.Sprintf("Already up to date (%s)", latest), true
+	}
+	return fmt.Sprintf("Already ahead of latest tag (current %s, latest %s)", current, latest), true
+}
+
+type semver struct {
+	major int
+	minor int
+	patch int
+}
+
+func parseSemver(v string) (semver, bool) {
+	trimmed := strings.TrimPrefix(strings.TrimSpace(v), "v")
+	parts := strings.Split(trimmed, ".")
+	if len(parts) < 2 {
+		return semver{}, false
+	}
+	if len(parts) > 3 {
+		parts = parts[:3]
+	}
+	nums := make([]int, 3)
+	for i := 0; i < 3; i++ {
+		if i >= len(parts) {
+			nums[i] = 0
+			continue
+		}
+		n, err := strconv.Atoi(parts[i])
+		if err != nil {
+			return semver{}, false
+		}
+		nums[i] = n
+	}
+	return semver{major: nums[0], minor: nums[1], patch: nums[2]}, true
+}
+
+func compareSemver(a, b semver) int {
+	if a.major != b.major {
+		return compareInt(a.major, b.major)
+	}
+	if a.minor != b.minor {
+		return compareInt(a.minor, b.minor)
+	}
+	return compareInt(a.patch, b.patch)
+}
+
+func compareInt(a, b int) int {
+	switch {
+	case a > b:
+		return 1
+	case a < b:
+		return -1
+	default:
+		return 0
+	}
 }
